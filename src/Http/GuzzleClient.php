@@ -17,7 +17,7 @@ class GuzzleClient implements HttpInterface
         }
 
         if ($method == 'POST' or $method == 'PUT') {
-            $options['body'] = $params;
+            $options['form_params'] = $params;
         }
 
         $client = new Client();

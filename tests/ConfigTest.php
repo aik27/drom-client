@@ -17,36 +17,36 @@ class ConfigTest extends TestCase
     {
         $this->expectExceptionMessage('"urlGetAll" config params required');
         new Config([
-            'urlPost' => 'http://example.com/comment',
-            'urlPut' => 'http://example.com/comment/{id}',
+            'urlCreate' => 'http://example.com/comment',
+            'urlUpdate' => 'http://example.com/comment/{id}',
         ]);
     }
 
     public function testEmptyUrlPost()
     {
-        $this->expectExceptionMessage('"urlPost" config params required');
+        $this->expectExceptionMessage('"urlCreate" config params required');
         new Config([
             'urlGetAll' => 'http://example.com/comments',
-            'urlPut' => 'http://example.com/comment/{id}',
+            'urlUpdate' => 'http://example.com/comment/{id}',
         ]);
     }
 
     public function testEmptyUrlPut()
     {
-        $this->expectExceptionMessage('"urlPut" config params required');
+        $this->expectExceptionMessage('"urlUpdate" config params required');
         new Config([
            'urlGetAll' => 'http://example.com/comments',
-           'urlPost' => 'http://example.com/comment',
+           'urlCreate' => 'http://example.com/comment',
         ]);
     }
 
     public function testMissingIdInUrlPut()
     {
-        $this->expectExceptionMessage('"{id}" variable in "urlPut" is required');
+        $this->expectExceptionMessage('"{id}" variable in "urlUpdate" is required');
         new Config([
            'urlGetAll' => 'http://example.com/comments',
-           'urlPost' => 'http://example.com/comment',
-           'urlPut' => 'http://example.com/comment',
+           'urlCreate' => 'http://example.com/comment',
+           'urlUpdate' => 'http://example.com/comment',
         ]);
     }
 }

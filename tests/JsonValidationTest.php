@@ -2,7 +2,7 @@
 
 namespace aik27\DromClient\tests;
 
-use aik27\DromClient\Comment;
+use aik27\DromClient\Client;
 use aik27\DromClient\Config;
 use aik27\DromClient\Http\GuzzleClient;
 use aik27\DromClient\Http\SymfonyClient;
@@ -14,15 +14,15 @@ use PHPUnit\Framework\TestCase;
 class JsonValidationTest extends TestCase
 {
     private Config $config;
-    private HttpInterface $client;
+    private HttpInterface $httpClient;
     private ValidatorInterface $validator;
 
     public function __construct(?string $name = null, array $data = [], $dataName = '')
     {
         $this->config = new Config([
             'urlGetAll' => 'http://example.com/comments',
-            'urlPost' => 'http://example.com/comment',
-            'urlPut' => 'http://example.com/comment/{id}',
+            'urlCreate' => 'http://example.com/comment',
+            'urlUpdate' => 'http://example.com/comment/{id}',
         ]);
         $this->client = new GuzzleClient();
         $this->validator = new JsonValidator();
@@ -33,24 +33,24 @@ class JsonValidationTest extends TestCase
     {
         $this->expectExceptionMessage('Validation failed');
 
-        $client = $this->createMock(get_class($this->client));
-        $client->method('request')
+        $httpClient = $this->createMock(get_class($this->client));
+        $httpClient->method('request')
             ->willReturn('sajhdflksadf');
 
-        $comment = new Comment($this->config, $client, $this->validator);
-        $comment->getAll();
+        $client = new Client($this->config, $httpClient, $this->validator);
+        $client->getAll();
     }
 
     public function testIncorrectJson()
     {
         $this->expectExceptionMessage('Validation failed');
 
-        $client = $this->createMock(get_class($this->client));
-        $client->method('request')
+        $httpClient = $this->createMock(get_class($this->client));
+        $httpClient->method('request')
             ->willReturn('{"firstName": "Иван","lastName": "Иванов');
 
-        $comment = new Comment($this->config, $client, $this->validator);
-        $comment->getAll();
+        $client = new Client($this->config, $httpClient, $this->validator);
+        $client->getAll();
     }
 
     public function testCorrectJson()
@@ -69,8 +69,8 @@ class JsonValidationTest extends TestCase
                ]
             }');
 
-        $client = $this->createMock(get_class($this->client));
-        $client->method('request')
+        $httpClient = $this->createMock(get_class($this->client));
+        $httpClient->method('request')
             ->willReturn('{
                "firstName": "Иван",
                "lastName": "Иванов",
@@ -85,7 +85,7 @@ class JsonValidationTest extends TestCase
                ]
             }');
 
-        $comment = new Comment($this->config, $client, $this->validator);
-        $comment->getAll();
+        $client = new Client($this->config, $httpClient, $this->validator);
+        $client->getAll();
     }
 }

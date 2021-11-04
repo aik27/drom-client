@@ -2,6 +2,8 @@
 
 namespace aik27\DromClient;
 
+use aik27\DromClient\Interfaces\ValidatorInterface;
+
 class Config
 {
     protected array $config = [];
@@ -12,12 +14,12 @@ class Config
         $this->checkConfig();
     }
 
-    public function get($name): string
+    public function get(string $name)
     {
-        return isset($this->config[$name]) ?? $this->config[$name];
+        return isset($this->config[$name]) ? $this->config[$name] : '';
     }
 
-    public function set($name, $value): void
+    public function set(string $name, $value): void
     {
         $this->config[$name] = $value;
     }
@@ -32,16 +34,17 @@ class Config
             throw new \Exception('"urlGetAll" config params required');
         }
 
-        if (!isset($this->config['urlPost']) or empty($this->config['urlPost'])) {
-            throw new \Exception('"urlPost" config params required');
+        if (!isset($this->config['urlCreate']) or empty($this->config['urlCreate'])) {
+            throw new \Exception('"urlCreate" config params required');
         }
 
-        if (!isset($this->config['urlPut']) or empty($this->config['urlPut'])) {
-            throw new \Exception('"urlPut" config params required');
+        if (!isset($this->config['urlUpdate']) or empty($this->config['urlUpdate'])) {
+            throw new \Exception('"urlUpdate" config params required');
         }
 
-        if (!preg_match('#\{id\}#', $this->config['urlPut'])) {
-            throw new \Exception('"{id}" variable in "urlPut" is required');
+        if (!preg_match('#\{id\}#', $this->config['urlUpdate'])) {
+            throw new \Exception('"{id}" variable in "urlUpdate" is required');
         }
+
     }
 }
