@@ -5,46 +5,46 @@ namespace aik27\DromClient\tests;
 use aik27\DromClient\Client;
 use aik27\DromClient\Config;
 use aik27\DromClient\Http\GuzzleClient;
-use aik27\DromClient\Http\SymfonyClient;
 use aik27\DromClient\Interfaces\HttpInterface;
-use aik27\DromClient\Interfaces\ValidatorInterface;
-use aik27\DromClient\Validators\JsonValidator;
 use aik27\DromClient\Validators\XmlValidator;
 use PHPUnit\Framework\TestCase;
 
 class XmlValidationTest extends TestCase
 {
-    private Config $config;
-    private HttpInterface $httpClient;
-    private ValidatorInterface $validator;
+    private array $config;
+    private HttpInterface $client;
 
     public function __construct(?string $name = null, array $data = [], $dataName = '')
     {
-        $this->config = new Config([
+        $this->config = [
             'urlGetAll' => 'http://example.com/comments',
             'urlCreate' => 'http://example.com/comment',
             'urlUpdate' => 'http://example.com/comment/{id}',
-        ]);
+            'httpClient' => new GuzzleClient(),
+            'validator' => new XmlValidator()
+        ];
         $this->client = new GuzzleClient();
-        $this->validator = new XmlValidator();
         parent::__construct($name, $data, $dataName);
     }
 
     public function testPlainText()
     {
-        $this->expectExceptionMessage('Validation failed');
+        $this->expectExceptionMessage('Response validation failed');
 
         $httpClient = $this->createMock(get_class($this->client));
         $httpClient->method('request')
             ->willReturn('sajhdflksadf');
 
-        $client = new Client($this->config, $httpClient, $this->validator);
+        $config = $this->config;
+        $config['httpClient'] = $httpClient;
+
+        $client = new Client(new Config($config));
         $client->getAll();
     }
 
     public function testIncorrectXml()
     {
-        $this->expectExceptionMessage('Validation failed');
+        $this->expectExceptionMessage('Response validation failed');
 
         $httpClient = $this->createMock(get_class($this->client));
         $httpClient->method('request')
@@ -56,7 +56,10 @@ class XmlValidationTest extends TestCase
                </title>
              <recipe>');
 
-        $client = new Client($this->config, $httpClient, $this->validator);
+        $config = $this->config;
+        $config['httpClient'] = $httpClient;
+
+        $client = new Client(new Config($config));
         $client->getAll();
     }
 
@@ -96,7 +99,10 @@ class XmlValidationTest extends TestCase
         $httpClient->method('request')
             ->willReturn($response);
 
-        $client = new Client($this->config, $httpClient, $this->validator);
+        $config = $this->config;
+        $config['httpClient'] = $httpClient;
+
+        $client = new Client(new Config($config));
         $this->assertSame($response, $client->getAll());
     }
 }
