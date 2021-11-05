@@ -2,6 +2,10 @@
 
 namespace aik27\DromClient\Interfaces;
 
+/**
+ * Specify client adapter for HTTP requests
+ */
+
 interface HttpInterface
 {
     /**

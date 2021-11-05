@@ -2,6 +2,33 @@
 
 namespace aik27\DromClient;
 
+/**
+ * Describes validation rules of client data for specific case.
+ *
+ * Configured through the constructor by array with structure: field_name => array [some rules]
+ *
+ * Example:
+ *
+ * ```php
+ *  $create = new Scenario([
+ *       'name' => [
+ *           'type' => 'string',
+ *           'required' => true,
+ *       ],
+ *       'text' => [
+ *           'type' => 'string',
+ *           'required' => true,
+ *       ],
+ *  ]);
+ * ```
+ *
+ * Available params to configure rules:
+ * ```text
+ * + type - int|string - expected data type
+ * + required - true|false - field exists and not empty
+ * ```
+ */
+
 class Scenario
 {
     protected array $fields = [];

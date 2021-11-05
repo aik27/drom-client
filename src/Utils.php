@@ -2,6 +2,10 @@
 
 namespace aik27\DromClient;
 
+/**
+ * Class of utility methods
+ */
+
 class Utils
 {
     public function objectToArray($data): array

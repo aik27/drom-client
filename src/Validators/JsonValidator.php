@@ -4,6 +4,10 @@ namespace aik27\DromClient\Validators;
 
 use aik27\DromClient\Interfaces\ValidatorInterface;
 
+/**
+ * JSON validator for server response
+ */
+
 class JsonValidator implements ValidatorInterface
 {
     /**

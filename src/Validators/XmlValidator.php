@@ -5,6 +5,10 @@ namespace aik27\DromClient\Validators;
 use aik27\DromClient\Interfaces\ValidatorInterface;
 use DOMDocument;
 
+/**
+ * XML validator for server response
+ */
+
 class XmlValidator implements ValidatorInterface
 {
     public string $version = '1.0';

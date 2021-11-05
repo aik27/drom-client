@@ -5,6 +5,58 @@ namespace aik27\DromClient;
 use aik27\DromClient\Interfaces\HttpInterface;
 use aik27\DromClient\Interfaces\ValidatorInterface;
 
+/**
+ * Configure application to work
+ *
+ * Example:
+ *
+ *```php
+ *  $config = new Config([
+ *      'urlGetAll' => 'http://example.com/comments',
+ *      'urlCreate' => 'http://example.com/comment',
+ *      'urlUpdate' => 'http://example.com/comment/{id}',
+ *      'httpClient' => new GuzzleClient(),
+ *      'validator' => new JsonValidator(),
+ *      'scenarioCreate' => new Scenario([
+ *          'name' => [
+ *              'type' => 'string',
+ *              'required' => true,
+ *          ],
+ *          'text' => [
+ *              'type' => 'string',
+ *              'required' => true,
+ *          ],
+ *      ]),
+ *      'scenarioUpdate' => new Scenario([
+ *       'id' => [
+ *           'type' => 'int',
+ *           'required' => true,
+ *       ],
+ *       'name' => [
+ *           'type' => 'string',
+ *            'required' => false,
+ *       ],
+ *       'text' => [
+ *           'type' => 'string',
+ *           'required' => false,
+ *       ],
+ *    ]),
+ *  ]);
+ * ```
+ *
+ * Available params of config array:
+ *
+ * ```code
+ * + urlGetAll [required] - url to get records from server
+ * + urlCreate [required] - url to create record on server
+ * + urlUpdate [required] - url to update record on server
+ * + httpClient [required] - object of http adapter for external library (Guzzle, Symfony) implements HttpInterface
+ * + validator [optional] - object to validate server response implements ValidatorInterface
+ * + scenarioCreate [optional] - object providing validation rules to client data on create scenario. Instance of Scenario class.
+ * + scenarioUpdate [optional] - object providing validation rules to client data on update scenario. Instance of Scenario class.
+ * ```
+ */
+
 class Config
 {
     protected array $config = [];

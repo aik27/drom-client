@@ -5,6 +5,13 @@ namespace aik27\DromClient;
 use aik27\DromClient\Interfaces\HttpInterface;
 use aik27\DromClient\Interfaces\ValidatorInterface;
 
+/**
+ * Light REST client for drom.ru exam
+ *
+ * Configured by Config instance class through the constructor
+ *
+ */
+
 class Client
 {
     protected Config $config;
@@ -21,41 +28,68 @@ class Client
         $this->utils = new Utils();
     }
 
+    /**
+     * Get all records from server through urlGetAll
+     *
+     * @return string
+     * @throws \Exception
+     */
+
     public function getAll(): string
     {
         $response = $this->http->request($this->config->get('urlGetAll'));
-
         $this->validateResponse($response);
 
         return $response;
     }
+
+    /**
+     * Create record on server through urlCreate
+     *
+     * @param object $data - use properties to assign a values
+     * @return string
+     * @throws \Exception
+     */
 
     public function create(object $data): string
     {
         $data = $this->utils->objectToArray($data);
-
         $this->validateData($data, self::SCENARIO_CREATE);
 
         $response = $this->http->request($this->config->get('urlCreate'), 'POST', $data);
-
         $this->validateResponse($response);
 
         return $response;
     }
+
+    /**
+     * Update record on server through urlUpdate
+     *
+     * @param object $data - use properties to assign a values
+     * @return string
+     * @throws \Exception
+     */
 
     public function update(object $data): string
     {
         $data = $this->utils->objectToArray($data);
-
         $this->validateData($data, self::SCENARIO_UPDATE);
 
         $url = str_replace('{id}', $data['id'], $this->config->get('urlUpdate'));
-        $response = $this->http->request($url, 'PUT', $data);
 
+        $response = $this->http->request($url, 'PUT', $data);
         $this->validateResponse($response);
 
         return $response;
     }
+
+    /**
+     * Validate client data by scenario
+     *
+     * @param array $data
+     * @return void
+     * @throws \Exception
+     */
 
     protected function validateData(array $data, int $scenario): void
     {
@@ -78,6 +112,14 @@ class Client
         }
     }
 
+    /**
+     * Validate server response
+     *
+     * @param array $data
+     * @return void
+     * @throws \Exception
+     */
+
     protected function validateResponse(string $response): void
     {
         /* @var ValidatorInterface */
@@ -85,7 +127,7 @@ class Client
 
         if ($validator instanceof ValidatorInterface) {
             if (!$validator->validate($response)) {
-                throw new \Exception('Validation failed');
+                throw new \Exception('Response validation failed');
             }
         }
     }

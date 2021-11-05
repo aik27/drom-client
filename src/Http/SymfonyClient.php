@@ -5,6 +5,10 @@ namespace aik27\DromClient\Http;
 use aik27\DromClient\Interfaces\HttpInterface;
 use Symfony\Component\HttpClient\HttpClient;
 
+/**
+ * Adapter for Symfony\Component\HttpClient library
+ */
+
 class SymfonyClient implements HttpInterface
 {
     /**

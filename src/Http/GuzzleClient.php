@@ -5,6 +5,10 @@ namespace aik27\DromClient\Http;
 use aik27\DromClient\Interfaces\HttpInterface;
 use GuzzleHttp\Client;
 
+/**
+ * Adapter for GuzzleHttp library
+ */
+
 class GuzzleClient implements HttpInterface
 {
     /**
