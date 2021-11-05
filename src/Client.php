@@ -2,21 +2,23 @@
 
 namespace aik27\DromClient;
 
-use aik27\DromClient\Http\GuzzleClient;
 use aik27\DromClient\Interfaces\HttpInterface;
 use aik27\DromClient\Interfaces\ValidatorInterface;
 
-class Client extends ClientAbstract
+class Client
 {
+    protected Config $config;
+    protected Utils $utils;
     protected HttpInterface $http;
+
+    protected const SCENARIO_CREATE = 1;
+    protected const SCENARIO_UPDATE = 2;
 
     public function __construct(Config $config)
     {
-        parent::__construct($config);
-
-        $http = $this->config->get('httpClient');
-
-        $this->http = $http instanceof HttpInterface ? $http : new GuzzleClient();
+        $this->config = $config;
+        $this->http = $this->config->get('httpClient');
+        $this->utils = new Utils();
     }
 
     public function getAll(): string
@@ -28,8 +30,10 @@ class Client extends ClientAbstract
         return $response;
     }
 
-    public function create(array $data): string
+    public function create(object $data): string
     {
+        $data = $this->utils->objectToArray($data);
+
         $this->validateData($data, self::SCENARIO_CREATE);
 
         $response = $this->http->request($this->config->get('urlCreate'), 'POST', $data);
@@ -39,8 +43,10 @@ class Client extends ClientAbstract
         return $response;
     }
 
-    public function update(array $data): string
+    public function update(object $data): string
     {
+        $data = $this->utils->objectToArray($data);
+
         $this->validateData($data, self::SCENARIO_UPDATE);
 
         $url = str_replace('{id}', $data['id'], $this->config->get('urlUpdate'));
@@ -51,20 +57,28 @@ class Client extends ClientAbstract
         return $response;
     }
 
-    protected function validateData(array $data, int $scenario)
+    protected function validateData(array $data, int $scenario): void
     {
-        /* @var Schema */
-        $schema = $this->config->get('schema');
+        switch ($scenario) {
+            case self::SCENARIO_CREATE:
+                /* @var Scenario */
+                $schema = $this->config->get('scenarioCreate');
+                break;
+            case self::SCENARIO_UPDATE:
+                /* @var Scenario */
+                $schema = $this->config->get('scenarioUpdate');
+                break;
+            default:
+                $schema = '';
+        }
 
-        if ($schema instanceof Schema) {
-            if ($schema->isDiffent($data, $scenario)) {
-                throw new \Exception('Data fields list is different of Schema list');
-            }
-            $schema->checkFields($data, $scenario);
+        if ($schema instanceof Scenario) {
+            $schema->checkFieldsDifference($data);
+            $schema->checkData($data);
         }
     }
 
-    protected function validateResponse($response)
+    protected function validateResponse(string $response): void
     {
         /* @var ValidatorInterface */
         $validator = $this->config->get('validator');

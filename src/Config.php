@@ -2,6 +2,7 @@
 
 namespace aik27\DromClient;
 
+use aik27\DromClient\Interfaces\HttpInterface;
 use aik27\DromClient\Interfaces\ValidatorInterface;
 
 class Config
@@ -11,7 +12,7 @@ class Config
     public function __construct(array $config)
     {
         $this->config = $config;
-        $this->checkConfig();
+        $this->check();
     }
 
     public function get(string $name)
@@ -24,27 +25,46 @@ class Config
         $this->config[$name] = $value;
     }
 
-    public function checkConfig(): void
+    protected function check(): void
     {
         if (empty($this->config)) {
             throw new \Exception('$config array can\'t be empty');
         }
 
         if (!isset($this->config['urlGetAll']) or empty($this->config['urlGetAll'])) {
-            throw new \Exception('"urlGetAll" config params required');
+            throw new \Exception('"urlGetAll" param is required');
         }
 
         if (!isset($this->config['urlCreate']) or empty($this->config['urlCreate'])) {
-            throw new \Exception('"urlCreate" config params required');
+            throw new \Exception('"urlCreate" param is required');
         }
 
         if (!isset($this->config['urlUpdate']) or empty($this->config['urlUpdate'])) {
-            throw new \Exception('"urlUpdate" config params required');
+            throw new \Exception('"urlUpdate" param is required');
         }
 
         if (!preg_match('#\{id\}#', $this->config['urlUpdate'])) {
-            throw new \Exception('"{id}" variable in "urlUpdate" is required');
+            throw new \Exception('"{id}" variable in "urlUpdate" param is required');
         }
 
+        if (!isset($this->config['httpClient'])) {
+            throw new \Exception('"httpClient" param is required');
+        }
+
+        if (!$this->config['httpClient'] instanceof HttpInterface) {
+            throw new \Exception('"httpClient" param is not an object or not implement HttpInterface');
+        }
+
+        if (isset($this->config['validator']) and !$this->config['validator'] instanceof ValidatorInterface) {
+            throw new \Exception('"validator" param is not an object or not implement ValidatorInterface');
+        }
+
+        if (isset($this->config['scenarioCreate']) and !$this->config['scenarioCreate'] instanceof Scenario) {
+            throw new \Exception('"scenarioCreate" param is not an exemplar of Scenario object');
+        }
+
+        if (isset($this->config['scenarioUpdate']) and !$this->config['scenarioUpdate'] instanceof Scenario) {
+            throw new \Exception('"scenarioUpdate" param is not an exemplar of Scenario object');
+        }
     }
 }

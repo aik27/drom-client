@@ -5,7 +5,7 @@ namespace aik27\DromClient\Interfaces;
 interface ValidatorInterface
 {
     /**
-     * Validate content
+     * Validate response content
      *
      * @param string $content
      * @return bool
