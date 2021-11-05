@@ -109,7 +109,7 @@ try {
     # Возвращает список записей
     $client->getAll();
     
-    # Добляет запись
+    # Добавляет запись
     $client->create((object)[
         'name' => 'Alexandr',
         'text' => 'Hello world',
