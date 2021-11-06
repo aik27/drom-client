@@ -19,4 +19,12 @@ interface HttpInterface
      * @throws \Exception
      */
     public function request(string $url, string $method, array $params = [], array $options = []): string;
+
+    /**
+     * Get headers from last response
+     *
+     * @return array
+     */
+    public function getHeaders(): array;
+
 }

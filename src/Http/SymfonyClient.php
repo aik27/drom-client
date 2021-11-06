@@ -11,6 +11,8 @@ use Symfony\Component\HttpClient\HttpClient;
 
 class SymfonyClient implements HttpInterface
 {
+    private array $headers = [];
+
     /**
      * {@inheritdoc}
      */
@@ -28,10 +30,21 @@ class SymfonyClient implements HttpInterface
         $response = $client->request($method, $url, $options);
         $code = $response->getStatusCode();
 
+        $this->headers = $response->getHeaders();
+
         if ($code !== 200) {
             throw new \Exception('HTTP error. Code: ' . $code . '.');
         }
 
         return $response->getContent();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+
+    public function getHeaders(): array
+    {
+        return $this->headers;
     }
 }

@@ -29,22 +29,24 @@ class Client
     }
 
     /**
-     * Get all records from server through urlGetAll
+     * Get all records from server through urlGetAll using GET method
+     *
+     * @param array $params - request params
      *
      * @return string
      * @throws \Exception
      */
 
-    public function getAll(): string
+    public function getAll(array $params = []): string
     {
-        $response = $this->http->request($this->config->get('urlGetAll'));
+        $response = $this->http->request($this->config->get('urlGetAll'), 'GET', $params);
         $this->validateResponse($response);
 
         return $response;
     }
 
     /**
-     * Create record on server through urlCreate
+     * Create record on server through urlCreate using POST method
      *
      * @param object $data - use properties to assign a values
      * @return string
@@ -63,7 +65,7 @@ class Client
     }
 
     /**
-     * Update record on server through urlUpdate
+     * Update record on server through urlUpdate using PUT method
      *
      * @param object $data - use properties to assign a values
      * @return string

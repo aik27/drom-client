@@ -11,6 +11,8 @@ use GuzzleHttp\Client;
 
 class GuzzleClient implements HttpInterface
 {
+    private array $headers = [];
+
     /**
      * {@inheritdoc}
      */
@@ -27,11 +29,21 @@ class GuzzleClient implements HttpInterface
         $client = new Client();
         $response = $client->request($method, $url, $options);
         $code = $response->getStatusCode();
+        $this->headers = $response->getHeaders();
 
         if ($code !== 200) {
             throw new \Exception('HTTP error. Code: ' . $code . '.');
         }
 
         return $response->getBody()->getContents();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+
+    public function getHeaders(): array
+    {
+        return $this->headers;
     }
 }
